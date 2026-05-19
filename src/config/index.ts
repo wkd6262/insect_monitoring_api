@@ -15,6 +15,8 @@ export default {
 
   jwtSecretKey: process.env.JWT_SECRET_KEY,
 
+  serverNumber: process.env.SERVER_NUM,
+  webhookSecretKey: process.env.WEBHOOK_SECRET_KEY,
   //for winston logger
   logs: {
     level: process.env.LOG_LEVEL,
