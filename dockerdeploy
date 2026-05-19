@@ -1,0 +1,7 @@
+sudo cp production.env .env
+sudo docker stop mosquito_api
+sudo docker rm mosquito_api
+sudo docker image rm mosquito_api
+sudo docker build -t mosquito_api .
+sudo docker run -d -v $HOME/log:/app/log -p 5000:5000 --name mosquito_api mosquito_api
+sudo docker logs --follow mosquito_api

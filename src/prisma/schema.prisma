@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  user_id         String    @unique //사용자 고유 아이디.
+  password        String //비밀번호
+  cellphone       String // 전화번호
+  user_level      Int       @default(0) //사용자 레벨 (0: 일반, 1: 관리자)
+  last_login_date DateTime? //마지막 로그인 날짜
+  created_date    DateTime //생성 날짜
+
+  userDevices UserDevice[]
+
+  @@index([user_id, created_date])
+}
+
+model Device {
+  id  Int   @id @default(autoincrement())
+  insect_type_id Int
+  device_name String //기기 이름
+  device_uuid String @unique //기기 고유 아이디.
+  device_usim String @unique //기기 유심 아이디.
+  address_sido String //시/도 주소
+  address_gungu String //시/군/구 주소
+  address_dong String //읍/면/동 주소
+  address_detail String //상세 주소
+  latitude Float //위도
+  longitude Float //경도
+  mode Int @default(2) // 장비 동작 모드 (0: OFF, 1: ON, 2: 일반)
+  ip_address String @default("")//IP 주소
+  on_time String @default("")//켜짐 시간
+  co2_on_time String @default("")//CO2 켜짐 시간
+  co2_period Int @default(5)//CO2 켜짐 주기
+  insect_count Int //장비 최신 마릿수 (등급은 DeviceSetting 기준으로 계산)
+  battery Int //배터리 잔량
+  charge Int //충전 상태
+  fan Int //팬 상태
+  valid_token String? @db.VarChar(512) //서버 인증에 사용되는 유효 토큰 값.
+  token_expired DateTime? //토큰 만료 시간.
+  device_date DateTime? //디바이스에 현재 등록된 시간.
+  updated_date DateTime? //디바이스에서 서버로 데이터 저장한 날짜.
+  created_date DateTime //생성 날짜
+  last_offline_alert_date DateTime?
+  last_battery_alert_date DateTime?
+  last_collection_alert_date DateTime?
+
+  deviceSetting DeviceSetting?
+  userDevices UserDevice[]
+  insectHistories InsectHistory[]
+
+  @@index([id, device_uuid, device_usim, created_date])
+}
+
+model UserDevice {
+  id  Int   @id @default(autoincrement())
+  user_id Int
+  device_uuid String
+  created_date DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id])
+  device Device @relation(fields: [device_uuid], references: [device_uuid])
+
+  @@index([user_id, device_uuid])
+}
+
+model InsectHistory {
+  id  Int   @id @default(autoincrement())
+  device_id Int?
+  device_uuid String
+  count Int //관측 마릿수
+  reset Boolean @default(false) //카운트 리셋 여부.
+  battery Int //배터리 잔량
+  charge Int //충전 상태
+  fan Int //팬 상태
+  image_url String @default("") //사진 URL (1차 상세·업로드)
+  observed_date DateTime //관측 일자
+  created_date DateTime @default(now())
+
+  device Device? @relation(fields: [device_id], references: [id], onDelete: SetNull)
+
+  @@index([device_id, created_date])
+}
+
+model Address {
+  id  Int   @id @default(autoincrement())
+  address_sido String
+  address_gungu String
+  address_dong String
+
+  @@index([address_sido, address_gungu, address_dong])
+}
+
+model DeviceSetting {
+  id Int      @id @default(autoincrement())
+  device_id Int      @unique // Device와의 1:1 관계 설정
+  normal_min Int // '쾌적' 상태의 최소값
+  normal_max Int // '쾌적' 상태의 최대값
+  warning_min Int // '관심' 상태의 최소값
+  warning_max Int // '관심' 상태의 최대값
+  bad_min Int // '불쾌' 상태의 최소값
+  bad_max Int // '불쾌' 상태의 최대값
+  created_date   DateTime @default(now())
+  updated_date   DateTime @updatedAt
+
+  device         Device   @relation(fields: [device_id], references: [id])
+
+  @@index([device_id])
+}
+
+model InsectType {
+  id           Int      @id @default(autoincrement())
+  type String   @unique //종명
+  created_date DateTime @default(now())
+}
