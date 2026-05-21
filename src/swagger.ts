@@ -3,10 +3,10 @@ import swaggerAutogen from 'swagger-autogen';
 const doc = {
   info: {
     title: 'Insect Monitoring API',
-    description: 'API documentation',
+    description: '곤충 모니터링 API',
   },
-  host: 'api.moscom.co.kr',
-  schemes: ['https'],
+  host: 'localhost:5000',
+  schemes: ['http'],
   components: {
     securitySchemes: {
       bearerAuth: {
@@ -18,287 +18,142 @@ const doc = {
   },
   definitions: {
     AccountListSuccessResponse: {
-      type: "array",
+      type: 'array',
       items: {
-        type: "object",
+        type: 'object',
         properties: {
-          id: { type: "integer" },
-          user_id: { type: "string" },
-          password: { type: "string", format: "password" },
-          user_level: { type: "integer" },
-          last_login_date: { type: "string", format: "date-time", nullable: true },
-          created_date: { type: "string", format: "date-time" },
-          _count: { 
-            type: "object",
-            properties: {
-              userDevices: { type: "integer" }
-            }
-          },
-        }
-      }
+          id: { type: 'integer' },
+          user_id: { type: 'string' },
+          password: { type: 'string', format: 'password' },
+          user_level: { type: 'integer' },
+          last_login_date: { type: 'string', format: 'date-time', nullable: true },
+          created_date: { type: 'string', format: 'date-time' },
+        },
+      },
     },
     AccountInfoSuccessResponse: {
-      type: "object",
+      type: 'object',
       properties: {
-        id: { type: "integer" },
-        user_id: { type: "string" },
-        password: { type: "string", format: "password" },
-        user_level: { type: "integer" },
-        last_login_date: { type: "string", format: "date-time", nullable: true },
-        created_date: { type: "string", format: "date-time" },
-        userDevices: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              device: {
-                type: "object",
-                properties: {
-                  id: { type: "integer" },
-                  device_name: { type: "string" },
-                  device_uuid: { type: "string" },
-                  ip_address: { type: "string" },
-                  latitude: { type: "number" },
-                  longitude: { type: "number" },
-                  insect_count: { type: "integer" },
-                  battery: { type: "integer" },
-                  charge: { type: "integer" },
-                  fan: { type: "integer" },
-                  token_expired: { type: "string", format: "date-time", nullable: true },
-                  device_date: { type: "string", format: "date-time" },
-                  updated_date: { type: "string", format: "date-time", nullable: true },
-                  created_date: { type: "string", format: "date-time" },
-                }
-              }
-            }
-          }
-        }
-      }
+        id: { type: 'integer' },
+        user_id: { type: 'string' },
+        password: { type: 'string', format: 'password' },
+        user_level: { type: 'integer' },
+        last_login_date: { type: 'string', format: 'date-time', nullable: true },
+        created_date: { type: 'string', format: 'date-time' },
+      },
     },
     AccountSuccessResponse: {
-      type: "object",
+      type: 'object',
       properties: {
-        type: { type: "string" },
+        type: { type: 'string' },
         user: {
-          type: "object", 
+          type: 'object',
           properties: {
-            id: { type: "integer", nullable: true },
-            user_id: { type: "string" },
-            password: { type: "string", format: "password" },
-            user_level: { type: "integer" },
-            last_login_date: { type: "string", format: "date-time", nullable: true },
-            created_date: { type: "string", format: "date-time" }
-          }
+            id: { type: 'integer', nullable: true },
+            user_id: { type: 'string' },
+            password: { type: 'string', format: 'password' },
+            user_level: { type: 'integer' },
+            last_login_date: { type: 'string', format: 'date-time', nullable: true },
+            created_date: { type: 'string', format: 'date-time' },
+          },
         },
-        token: { type: "string" }
-      }
+        token: { type: 'string' },
+      },
     },
     AccountFailedResponse: {
-      type: "object", 
+      type: 'object',
       properties: {
-        type: { type: "string" },
-        user: { type: "null" },
-        message: { type: "string" }
-      }
+        type: { type: 'string' },
+        user: { type: 'null' },
+        message: { type: 'string' },
+      },
     },
-    DeviceGroupListSuccessResponse: {
-      type: "array",
+    AddressListSuccessResponse: {
+      type: 'array',
       items: {
-        type: "object",
+        type: 'object',
         properties: {
-          device_group_id: { type: "integer", nullable: true },
-          deviceGroup: {
-            type: "object",
-            properties: {
-              id: { type: "integer", nullable: true },
-              group_name: { type: "string" },
-              created_date: { type: "string", format: "date-time" }
-            }
-          }
-        }
-      }
-    },
-    DeviceListSuccessResponse: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          device: {
-            type: "object", 
-            properties: {
-              id: { type: "integer", nullable: true },
-              device_group_id: { type: "integer"},
-              device_name: { type: "string" },
-              device_uuid: { type: "string" },
-              ip_address: { type: "string" },
-              latitude: { type: "number" },
-              longitude: { type: "number" },
-              insect_count: { type: "integer" },
-              battery: { type: "integer" },
-              charge: { type: "integer" },
-              fan: { type: "integer" },
-              token_expired: { type: "string", format: "date-time", nullable: true },
-              device_date: { type: "string", format: "date-time" },
-              updated_date: { type: "string", format: "date-time", nullable: true },
-              created_date: { type: "string", format: "date-time" },
-            }
-          },
-          device_group: {
-            type: "object",
-            properties: {
-              id: { type: "integer", nullable: true },
-              group_name: { type: "string" },
-              created_date: { type: "string", format: "date-time" }
-            }
-          }
-        }
-      }
-    },
-    DeviceGroupSuccessResponse: {
-      type: "object",
-      properties: {
-        id: { type: "integer", nullable: true },
-        group_name: { type: "string" },
-        created_date: { type: "string", format: "date-time" }
-      }
-    },
-    DeviceGetSuccessResponse: {
-      type: "object",
-      properties: {
-        device: {
-          type: "object",
-          properties: {
-            id: { type: "integer", nullable: true },
-            device_group_id: { type: "integer"},
-            device_name: { type: "string" },
-            device_uuid: { type: "string" },
-            ip_address: { type: "string" },
-            latitude: { type: "number" }, 
-            longitude: { type: "number" },
-            insect_count: { type: "integer" },
-            battery: { type: "integer" },
-            charge: { type: "integer" },
-            fan: { type: "integer" },
-            token_expired: { type: "string", format: "date-time", nullable: true },
-            device_date: { type: "string", format: "date-time" },
-            updated_date: { type: "string", format: "date-time", nullable: true },
-            created_date: { type: "string", format: "date-time" },
-          }
+          id: { type: 'integer' },
+          address_sido: { type: 'string' },
+          address_gungu: { type: 'string' },
+          address_dong: { type: 'string' },
         },
-        device_group: {
-          type: "object", 
-          properties: {
-            id: { type: "integer", nullable: true },
-            group_name: { type: "string" },
-            created_date: { type: "string", format: "date-time" }
-          }
-        }
-      }
+      },
     },
-    DeviceSuccessResponse: {
-      type: "object",
+    CollectionHistory: {
+      type: 'object',
       properties: {
-        id: { type: "integer", nullable: true },
-        device_group_id: { type: "integer"},
-        device_name: { type: "string" },
-        device_uuid: { type: "string" },
-        ip_address: { type: "string" },
-        latitude: { type: "number" }, 
-        longitude: { type: "number" },
-        insect_count: { type: "integer" },
-        battery: { type: "integer" },
-        charge: { type: "integer" },
-        fan: { type: "integer" },
-        token_expired: { type: "string", format: "date-time", nullable: true },
-        device_date: { type: "string", format: "date-time" },
-        updated_date: { type: "string", format: "date-time", nullable: true },
-        created_date: { type: "string", format: "date-time" },
-      }
+        id: { type: 'integer' },
+        device_id: { type: 'integer', nullable: true },
+        insect_name: { type: 'string' },
+        image_file: { type: 'string' },
+        address_sido: { type: 'string' },
+        address_gungu: { type: 'string' },
+        address_dong: { type: 'string' },
+        address_detail: { type: 'string' },
+        latitude: { type: 'number' },
+        longitude: { type: 'number' },
+        collect_count: { type: 'integer' },
+        status: { type: 'string', description: 'good | normal | warning | bad' },
+        memo: { type: 'string' },
+        created_date: { type: 'string', format: 'date-time' },
+      },
     },
-    ListByCountSuccessResponse: {
-      type: "array",
+    CollectionHistoryListResponse: {
+      type: 'array',
       items: {
-        type: "object",
+        type: 'object',
         properties: {
-          device_group_id: { type: "integer"},
-          device_id: { type: "integer"},
-          count: { type: "integer"},
-        }
-      }
+          id: { type: 'integer' },
+          device_id: { type: 'integer', nullable: true },
+          insect_name: { type: 'string' },
+          image_file: { type: 'string' },
+          address_sido: { type: 'string' },
+          address_gungu: { type: 'string' },
+          address_dong: { type: 'string' },
+          address_detail: { type: 'string' },
+          latitude: { type: 'number' },
+          longitude: { type: 'number' },
+          collect_count: { type: 'integer' },
+          status: { type: 'string' },
+          memo: { type: 'string' },
+          created_date: { type: 'string', format: 'date-time' },
+        },
+      },
     },
-    SummarySuccessResponse: {
-      type: "object",
+    StatisticsSummaryResponse: {
+      type: 'object',
       properties: {
-        device_group_id: { type: "integer" },
-        device_count: { type: "integer" },
-        online_count: { type: "integer" },
-        offline_count: { type: "integer" },
-        warning_count: { type: "integer" },
-        insect_count: { type: "integer" },
-      }
+        id: { type: 'integer' },
+        good_count: { type: 'integer' },
+        normal_count: { type: 'integer' },
+        warning_count: { type: 'integer' },
+        bad_count: { type: 'integer' },
+      },
     },
-    StatisticsSuccessResponse: {
-      type: "array",
-      items: { 
-        type: "object",
-        properties: {
-          id: { type: "integer" },
-          device_id: { type: "integer" },
-          device_uuid: { type: "string" },
-          insect_count: { type: "integer" },
-          created_date: { type: "string", format: "date-time" },
-        }
-      }
-    },
-    ControlSuccessResponse: {
-      type: "string",
+    GeneralSuccessResponse: {
+      type: 'object',
       properties: {
-        status: { type: "string" },
-      }
-    },
-    WebHookAuthSuccessResponse: {
-      type: "object",
-      properties: {
-        status: { type: "string" },
-        token: { type: "string" },
-        expires_in: { type: "number" }
-      }
-    },
-    WebHookAuthFailedResponse: {
-      type: "object",
-      properties: {
-        status: { type: "string" },
-        message: { type: "string" }
-      } 
-    },
-    WebHookDeviceSuccessResponse: {
-      type: "object",
-      properties: {
-        status: { type: "string" },
-      }
-    },
-    WebHookDeviceFailedResponse: {
-      type: "object",
-      properties: {
-        status: { type: "string" },
-        message: { type: "string" }
-      } 
+        type: { type: 'string' },
+        message: { type: 'string' },
+      },
     },
     GeneralFailedResponse: {
-      type: "object",
+      type: 'object',
       properties: {
-        type: { type: "string" },
-        message: { type: "string" }
-      }
+        type: { type: 'string' },
+        message: { type: 'string' },
+      },
     },
   },
 };
 
 const outputFile = './swagger-output.json';
 const routes = [
-    './src/routes/account-router.ts',
-    './src/routes/device-router.ts',
-    './src/routes/webhook-router.ts',
+  './src/routes/account-router.ts',
+  './src/routes/address-router.ts',
+  './src/routes/collection-router.ts',
+  './src/routes/statistics-router.ts',
 ];
 
-swaggerAutogen({ openapi: "3.0.0"})(outputFile, routes, doc);
+swaggerAutogen({ openapi: '3.0.0' })(outputFile, routes, doc);

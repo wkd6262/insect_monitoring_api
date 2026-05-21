@@ -1,145 +1,83 @@
 import prisma from '../prisma';
-import { InsectHistory } from '../models/insectHistory';
+import { CollectionHistory } from '../models/collectionHistory';
 
 export class CollectionService {
-  public async register(data: InsectHistory): Promise<InsectHistory> {
-      const newData: InsectHistory = await prisma.insectHistory.create({data: {...data, device: undefined}});
-      return newData;
+  public async register(data: CollectionHistory): Promise<CollectionHistory> {
+    const newData: CollectionHistory = await prisma.collectionHistory.create({
+      data,
+    });
+    return newData;
   }
-  
+
   public async count() {
-      const count: number = await prisma.insectHistory.count();
-      return count;
+    const count: number = await prisma.collectionHistory.count();
+    return count;
   }
 
-  public async findByDate(startDate: Date, endDate: Date, deviceIds: number[]): Promise<InsectHistory[]> {
-    const list: InsectHistory[] = await prisma.insectHistory.findMany({
-      where: {
-        created_date: {
-          gte: startDate,
-          lte: endDate
-        },
-        device_id: {
-          in: deviceIds
-        }
-      },
-      orderBy: {
-        created_date: 'desc'
-      }
-    });
-    return list;
+  public async countByStatus() {
+    const [good_count, normal_count, warning_count, bad_count] = await Promise.all([
+      prisma.collectionHistory.count({ where: { status: 'good' } }),
+      prisma.collectionHistory.count({ where: { status: 'normal' } }),
+      prisma.collectionHistory.count({ where: { status: 'warning' } }),
+      prisma.collectionHistory.count({ where: { status: 'bad' } }),
+    ]);
+    return { good_count, normal_count, warning_count, bad_count };
   }
 
-  public async find(page: number, count: number): Promise<InsectHistory[]> {
-      const list: InsectHistory[] = await prisma.insectHistory.findMany({
-          orderBy: {
-              created_date: 'desc'
-          },
-          skip: (page - 1) * count,
-          take: count
+  public async findById(id: number): Promise<CollectionHistory | null> {
+    const history: CollectionHistory | null =
+      await prisma.collectionHistory.findUnique({
+        where: { id },
       });
-      return list;
-  }
-
-public async findCountOneHourAgo(deviceId: number): Promise<InsectHistory | null> {
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-
-    const history = await prisma.insectHistory.findFirst({
-      where: {
-        device_id: deviceId,
-        created_date: {
-          lte: oneHourAgo
-        }
-      },
-      orderBy: {
-        created_date: 'desc'
-      }
-    });
-    
     return history;
   }
 
-  public async findWithDeviceByDateRange(startDate: Date, endDate: Date): Promise<InsectHistory[]> {
-    const list: InsectHistory[] = await prisma.insectHistory.findMany({
-      where: {
-        created_date: {
-          gte: startDate,
-          lte: endDate
-        }
-      },
-      include: {
-        device: true
-      },
-      orderBy: {
-        created_date: 'asc'
-      }
+  public async find(page: number, count: number): Promise<CollectionHistory[]> {
+    const list: CollectionHistory[] = await prisma.collectionHistory.findMany({
+      orderBy: { created_date: 'desc' },
+      skip: (page - 1) * count,
+      take: count,
     });
     return list;
   }
-  
-  public async update(id: number, data: InsectHistory): Promise<InsectHistory | null> {
-      const newData: InsectHistory | null  = await prisma.insectHistory.update({
-          where: {
-              id: id
-          },
-          data: {
-            ...data,
-            device: undefined
-          }
-      });
-      return newData;
+
+  public async findMapList(
+    addressSido: string,
+    addressGungu: string,
+    addressDong: string,
+  ): Promise<CollectionHistory[]> {
+    const where: {
+      address_sido?: string;
+      address_gungu?: string;
+      address_dong?: string;
+    } = {};
+
+    if (addressSido) where.address_sido = addressSido;
+    if (addressGungu) where.address_gungu = addressGungu;
+    if (addressDong) where.address_dong = addressDong;
+
+    const list: CollectionHistory[] = await prisma.collectionHistory.findMany({
+      where,
+      orderBy: { created_date: 'desc' },
+    });
+    return list;
   }
 
-  public async updateCount(id: number, historyCount: number): Promise<InsectHistory | null> {
-    const updated: InsectHistory = await prisma.insectHistory.update({
+  public async update(
+    id: number,
+    data: CollectionHistory,
+  ): Promise<CollectionHistory | null> {
+    const newData: CollectionHistory | null = await prisma.collectionHistory.update({
       where: { id },
-      data: { count: historyCount },
+      data,
     });
-    return updated;
-  }
-
-  public async updateManyCountByDateRange(
-    startDate: Date,
-    endDate: Date,
-    historyCount: number,
-    deviceUuid?: string
-  ) {
-    return prisma.insectHistory.updateMany({
-      where: {
-        created_date: { gte: startDate, lte: endDate },
-        ...(deviceUuid ? { device_uuid: deviceUuid } : {}),
-      },
-      data: { count: historyCount },
-    });
-  }
-
-  public async updateDeviceUuidByDeviceId(deviceId: number, newDeviceUuid: string) {
-    const updateData = prisma.insectHistory.updateMany({
-        where: {
-            device_id: deviceId
-        },
-        data: {
-            device_uuid: newDeviceUuid
-        }
-    });
-    return updateData;
-  }
-
-  public async deleteByDeviceUUID(deviceUUID: string) {
-    const deleteData = prisma.insectHistory.deleteMany({
-        where: {
-            device_uuid: deviceUUID
-        }
-    })
-    return deleteData;
+    return newData;
   }
 
   public async delete(id: number) {
-    const deleteData = prisma.insectHistory.delete({
-        where: {
-            id: id
-        }
-    })
+    const deleteData = prisma.collectionHistory.delete({
+      where: { id },
+    });
     return deleteData;
   }
 }

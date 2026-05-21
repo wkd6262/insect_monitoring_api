@@ -2,6 +2,9 @@ import express, { NextFunction } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import accountRouter from '../routes/account-router';
+import addressRouter from '../routes/address-router';
+import collectionRouter from '../routes/collection-router';
+import statisticsRouter from '../routes/statistics-router';
 import config from '../config';
 import Logger from '../loaders/logger';
 import swaggerUi from 'swagger-ui-express';
@@ -70,6 +73,11 @@ export default ({ app }: { app: express.Application }) => {
   app.use(cors()); //cors를 allow한다.
 
   app.use('/account', accountRouter);
+  app.use('/address', addressRouter);
+  app.use('/collection', collectionRouter);
+  app.use('/statistics', statisticsRouter);
+
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
   /// catch 404 and forward to error handler
   app.use((req, res, next) => {

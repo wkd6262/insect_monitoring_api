@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Mosquito Backend API",
-    "description": "API documentation",
+    "title": "Insect Monitoring API",
+    "description": "곤충 모니터링 API",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.moscom.co.kr/"
+      "url": "http://localhost:5000/"
     }
   ],
   "paths": {
@@ -16,11 +16,11 @@
         "tags": [
           "account"
         ],
-        "summary": "사용자 목록 요청",
+        "summary": "사용자 목록",
         "description": "",
         "responses": {
           "200": {
-            "description": "요청 성공",
+            "description": "성공",
             "content": {
               "application/json": {
                 "schema": {
@@ -30,7 +30,7 @@
             }
           },
           "400": {
-            "description": "요청 실패",
+            "description": "실패",
             "content": {
               "application/json": {
                 "schema": {
@@ -52,12 +52,13 @@
         "tags": [
           "account"
         ],
-        "summary": "사용자 정보 요청",
+        "summary": "사용자 정보",
         "description": "",
         "parameters": [
           {
             "name": "userId",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -65,7 +66,7 @@
         ],
         "responses": {
           "200": {
-            "description": "요청 성공",
+            "description": "성공",
             "content": {
               "application/json": {
                 "schema": {
@@ -75,7 +76,7 @@
             }
           },
           "400": {
-            "description": "요청 실패",
+            "description": "실패",
             "content": {
               "application/json": {
                 "schema": {
@@ -97,11 +98,11 @@
         "tags": [
           "account"
         ],
-        "summary": "사용자 가입 요청",
+        "summary": "사용자 가입",
         "description": "",
         "responses": {
           "200": {
-            "description": "가입 성공",
+            "description": "성공",
             "content": {
               "application/json": {
                 "schema": {
@@ -111,7 +112,7 @@
             }
           },
           "400": {
-            "description": "가입 실패",
+            "description": "실패",
             "content": {
               "application/json": {
                 "schema": {
@@ -127,42 +128,22 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {
-                  "userId": {
-                    "type": "string",
-                    "description": "사용자 고유 값"
-                  },
-                  "password": {
-                    "type": "string",
-                    "description": "비밀번호"
-                  },
-                  "userLevel": {
-                    "type": "number",
-                    "description": "사용자 레벨(0 - 장비 소유자, 1 - 관리자)"
-                  },
-                  "deviceUUIDs": {
-                    "type": "array",
-                    "description": "장비 UUID 목록",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                },
                 "required": [
                   "userId",
                   "password",
-                  "userLevel",
-                  "deviceUUIDs"
-                ]
-              },
-              "example": {
-                "userId": "test",
-                "password": "1234",
-                "userLevel": 0,
-                "deviceUUIDs": [
-                  "123e4567-e89b-12d3-a456-426614174000",
-                  "123e4567-e89b-12d3-a456-426614174001"
-                ]
+                  "userLevel"
+                ],
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "userLevel": {
+                    "type": "integer"
+                  }
+                }
               }
             }
           }
@@ -174,13 +155,12 @@
         "tags": [
           "account"
         ],
-        "summary": "사용자 로그인 요청",
+        "summary": "로그인",
         "description": "",
         "parameters": [
           {
             "name": "loginId",
             "in": "query",
-            "description": "사용자 ID",
             "required": true,
             "schema": {
               "type": "string"
@@ -189,7 +169,6 @@
           {
             "name": "password",
             "in": "query",
-            "description": "비밀번호",
             "required": true,
             "schema": {
               "type": "string"
@@ -198,7 +177,7 @@
         ],
         "responses": {
           "200": {
-            "description": "로그인 성공",
+            "description": "성공",
             "content": {
               "application/json": {
                 "schema": {
@@ -208,7 +187,7 @@
             }
           },
           "400": {
-            "description": "로그인 실패",
+            "description": "실패",
             "content": {
               "application/json": {
                 "schema": {
@@ -225,214 +204,15 @@
         "tags": [
           "account"
         ],
-        "summary": "계정 수정 요청",
+        "summary": "사용자 수정",
         "description": "",
         "responses": {
           "200": {
-            "description": "계정 수정 성공",
+            "description": "성공",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AccountSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "계정 수정 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccountFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "userId": {
-                    "type": "number",
-                    "description": "수정할 사용자 고유 값"
-                  },
-                  "password": {
-                    "type": "string",
-                    "description": "비밀번호 (비어있을 경우 비밀번호 변경 없음)"
-                  },
-                  "userLevel": {
-                    "type": "number",
-                    "description": "사용자 레벨(0 - 장비 소유자, 1 - 관리자)"
-                  },
-                  "deviceUUIDs": {
-                    "type": "array",
-                    "description": "장비 UUID 목록",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "required": [
-                  "userId",
-                  "userLevel",
-                  "deviceUUIDs"
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    "/account/delete": {
-      "delete": {
-        "tags": [
-          "account"
-        ],
-        "summary": "계정 삭제 요청",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "계정 삭제 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccountSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "계정 삭제 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccountFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "userId": {
-                    "type": "number",
-                    "description": "삭제할 사용자 고유 값"
-                  }
-                },
-                "required": [
-                  "userId"
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    "/device/listUUID": {
-      "get": {
-        "tags": [
-          "device"
-        ],
-        "summary": "UUID(Mac Address)만 존재하는 장비 목록 요청",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeviceListSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "요청 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GeneralFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/device/listGroup": {
-      "get": {
-        "tags": [
-          "device"
-        ],
-        "summary": "특정 사용자의 장비 그룹 목록 요청",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeviceGroupListSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "요청 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GeneralFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/device/listAll": {
-      "get": {
-        "tags": [
-          "device"
-        ],
-        "summary": "사용자의 모든 장비 목록 요청",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeviceListSuccessResponse"
+                  "$ref": "#/components/schemas/GeneralSuccessResponse"
                 }
               }
             }
@@ -445,42 +225,6 @@
           {
             "bearerAuth": []
           }
-        ]
-      }
-    },
-    "/device/addGroup": {
-      "post": {
-        "tags": [
-          "device"
-        ],
-        "summary": "장비 그룹 추가",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeviceGroupSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "요청 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GeneralFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
         ],
         "requestBody": {
           "required": true,
@@ -488,307 +232,47 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {
-                  "groupName": {
-                    "type": "string",
-                    "description": "생성할 그룹명"
-                  }
-                },
                 "required": [
-                  "groupName"
-                ]
-              },
-              "example": {
-                "groupName": "test"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/device/updateGroup": {
-      "put": {
-        "tags": [
-          "device"
-        ],
-        "summary": "장비 그룹명 수정 요청",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "장비 그룹명 수정 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeviceSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "장비 그룹명 수정 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GeneralFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
+                  "userId",
+                  "userLevel"
+                ],
                 "properties": {
-                  "groupId": {
-                    "type": "number",
-                    "description": "수정할 그룹 고유 값"
+                  "userId": {
+                    "type": "integer"
                   },
-                  "groupName": {
-                    "type": "string",
-                    "description": "변경할 그룹명"
+                  "password": {
+                    "type": "string"
+                  },
+                  "userLevel": {
+                    "type": "integer"
                   }
-                },
-                "required": [
-                  "groupId",
-                  "groupName"
-                ]
+                }
               }
             }
           }
         }
       }
     },
-    "/device/deleteGroup": {
+    "/account/delete": {
       "delete": {
         "tags": [
-          "device"
+          "account"
         ],
-        "summary": "장비 그룹 삭제",
+        "summary": "사용자 삭제",
         "description": "",
-        "parameters": [
-          {
-            "name": "deviceGroupId",
-            "in": "query",
-            "description": "장비 그룹 고유 ID",
-            "required": true,
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
         "responses": {
           "200": {
-            "description": "요청 성공",
+            "description": "성공",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string",
-                  "example": "success"
+                  "$ref": "#/components/schemas/GeneralSuccessResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "요청 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GeneralFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/device/list": {
-      "get": {
-        "tags": [
-          "device"
-        ],
-        "summary": "특정 장비 그룹 내 장비 목록 요청",
-        "description": "",
-        "parameters": [
-          {
-            "name": "deviceGroupId",
-            "in": "query",
-            "description": "장비 그룹 고유 ID",
-            "required": true,
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeviceListSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "요청 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GeneralFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/device/get": {
-      "get": {
-        "tags": [
-          "device"
-        ],
-        "summary": "특정 장비 정보 요청",
-        "description": "",
-        "parameters": [
-          {
-            "name": "deviceUUID",
-            "in": "query",
-            "description": "장비 고유 UUID",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDeviceSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "요청 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GeneralFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/device/search": {
-      "get": {
-        "tags": [
-          "device"
-        ],
-        "summary": "장비 검색",
-        "description": "",
-        "parameters": [
-          {
-            "name": "deviceUUID",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "uuid",
-            "in": "query",
-            "description": "장비 고유 UUID",
-            "required": true,
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeviceListSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "요청 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GeneralFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/device/addDevice_v2": {
-      "post": {
-        "tags": [
-          "device"
-        ],
-        "summary": "장비 추가",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeviceSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "요청 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GeneralFailedResponse"
-                }
-              }
-            }
+            "description": "Bad Request"
           }
         },
         "security": [
@@ -802,211 +286,40 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {
-                  "deviceGroupId": {
-                    "type": "number",
-                    "description": "연동되는 그룹 번호"
-                  },
-                  "deviceName": {
-                    "type": "string",
-                    "description": "장비명"
-                  },
-                  "deviceUUID": {
-                    "type": "string",
-                    "description": "장비 UUID"
-                  },
-                  "address": {
-                    "type": "string",
-                    "description": "장비가 설치된 주소"
-                  }
-                },
                 "required": [
-                  "groupName"
-                ]
-              },
-              "example": {
-                "deviceGroupId": 1,
-                "deviceUUID": "1234567890",
-                "address": "서울특별시 강남구 테헤란로 14길"
+                  "userId"
+                ],
+                "properties": {
+                  "userId": {
+                    "type": "integer"
+                  }
+                }
               }
             }
           }
         }
       }
     },
-    "/device/addDevice": {
-      "post": {
+    "/address/list": {
+      "get": {
         "tags": [
-          "device"
+          "address"
         ],
-        "summary": "장비 추가",
+        "summary": "주소 목록",
         "description": "",
         "responses": {
           "200": {
-            "description": "요청 성공",
+            "description": "성공",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeviceSuccessResponse"
+                  "$ref": "#/components/schemas/AddressListSuccessResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "요청 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GeneralFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "deviceGroupId": {
-                    "type": "number",
-                    "description": "연동되는 그룹 번호"
-                  },
-                  "deviceName": {
-                    "type": "string",
-                    "description": "장비명"
-                  },
-                  "deviceUUID": {
-                    "type": "string",
-                    "description": "장비 UUID"
-                  },
-                  "address": {
-                    "type": "string",
-                    "description": "장비가 설치된 주소"
-                  }
-                },
-                "required": [
-                  "groupName"
-                ]
-              },
-              "example": {
-                "deviceGroupId": 1,
-                "deviceUUID": "1234567890",
-                "address": "서울특별시 강남구 테헤란로 14길"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/device/updateDevice": {
-      "put": {
-        "tags": [
-          "device"
-        ],
-        "summary": "장비 수정 요청",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "장비 수정 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeviceSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "장비 수정 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GeneralFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "deviceId": {
-                    "type": "number",
-                    "description": "수정할 디바이스 고유 값"
-                  },
-                  "deviceName": {
-                    "type": "string",
-                    "description": "변경할 장비명"
-                  },
-                  "deviceUUID": {
-                    "type": "string",
-                    "description": "변경할 장비 고유 ID 값"
-                  },
-                  "address": {
-                    "type": "string",
-                    "description": "변경할 장비 위치 값"
-                  }
-                },
-                "required": [
-                  "deviceName",
-                  "deviceUUID",
-                  "address"
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    "/device/deleteDevice": {
-      "delete": {
-        "tags": [
-          "device"
-        ],
-        "summary": "장비 삭제",
-        "description": "",
-        "parameters": [
-          {
-            "name": "deviceUUID",
-            "in": "query",
-            "description": "장비 UUID",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "example": "success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "요청 실패",
+            "description": "실패",
             "content": {
               "application/json": {
                 "schema": {
@@ -1023,46 +336,42 @@
         ]
       }
     },
-    "/device/listByCount": {
+    "/collection/list": {
       "get": {
         "tags": [
-          "device"
+          "collection"
         ],
-        "summary": "지정된 마릿수 이상 잡힌 장비 검색",
+        "summary": "채집 이력 목록 (관리자)",
         "description": "",
         "parameters": [
           {
-            "name": "deviceGroupId",
+            "name": "page",
             "in": "query",
-            "description": "장비 그룹 ID (0이면 모든 장비)",
-            "required": true,
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           },
           {
             "name": "count",
             "in": "query",
-            "description": "잡힌 마릿수(이상) (ex: 200이면 200마리 이상)",
-            "required": true,
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "요청 성공",
+            "description": "성공",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListByCountSuccessResponse"
+                  "$ref": "#/components/schemas/CollectionHistoryListResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "요청 실패",
+            "description": "실패",
             "content": {
               "application/json": {
                 "schema": {
@@ -1079,37 +388,49 @@
         ]
       }
     },
-    "/device/summary": {
+    "/collection/map": {
       "get": {
         "tags": [
-          "device"
+          "collection"
         ],
-        "summary": "장비 현황 요약 정보 요청",
+        "summary": "지도용 채집 이력",
         "description": "",
         "parameters": [
           {
-            "name": "deviceGroupId",
+            "name": "address_sido",
             "in": "query",
-            "description": "장비 그룹 ID (0이면 모든 장비)",
-            "required": true,
             "schema": {
-              "type": "number"
+              "type": "string"
+            }
+          },
+          {
+            "name": "address_gungu",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "address_dong",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "요청 성공",
+            "description": "성공",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SummarySuccessResponse"
+                  "$ref": "#/components/schemas/CollectionHistoryListResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "요청 실패",
+            "description": "실패",
             "content": {
               "application/json": {
                 "schema": {
@@ -1126,62 +447,36 @@
         ]
       }
     },
-    "/device/statistics": {
+    "/collection/detail": {
       "get": {
         "tags": [
-          "device"
+          "collection"
         ],
-        "summary": "장비 포충 실적 요청",
+        "summary": "채집 이력 상세",
         "description": "",
         "parameters": [
           {
-            "name": "offset",
+            "name": "id",
             "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "deviceGroupId",
-            "in": "query",
-            "description": "장비 그룹 ID (0이면 그룹 ID 무시)",
             "required": true,
             "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "deviceUUID",
-            "in": "query",
-            "description": "장비 UUID (0이면 UUID 무시)",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "type",
-            "in": "query",
-            "description": "타입 (0 - 3개월, 1 - 4주/5주, 2 - 7일, 3 - 24시간)",
-            "required": true,
-            "schema": {
-              "type": "string"
+              "type": "integer"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "요청 성공",
+            "description": "성공",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StatisticsSuccessResponse"
+                  "$ref": "#/components/schemas/CollectionHistory"
                 }
               }
             }
           },
           "400": {
-            "description": "요청 실패",
+            "description": "실패",
             "content": {
               "application/json": {
                 "schema": {
@@ -1198,26 +493,26 @@
         ]
       }
     },
-    "/device/control": {
+    "/collection/register": {
       "post": {
         "tags": [
-          "device"
+          "collection"
         ],
-        "summary": "장비 제어",
+        "summary": "채집 이력 등록",
         "description": "",
         "responses": {
           "200": {
-            "description": "요청 성공",
+            "description": "성공",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ControlSuccessResponse"
+                  "$ref": "#/components/schemas/CollectionHistory"
                 }
               }
             }
           },
           "400": {
-            "description": "요청 실패",
+            "description": "실패",
             "content": {
               "application/json": {
                 "schema": {
@@ -1238,194 +533,281 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {
-                  "deviceGroupId": {
-                    "type": "number",
-                    "description": "장비 그룹 ID"
-                  },
-                  "deviceUUID": {
-                    "type": "string",
-                    "description": "장비 UUID (비어있으면 무시)"
-                  },
-                  "control": {
-                    "type": "string",
-                    "description": "제어 명령 (server_time - 서버 시간 전달, on_time - 켜짐 시간 설정, factory_reset - 공장 초기화, count_reset - 포집수 초기화 요청)"
-                  },
-                  "value": {
-                    "type": "string",
-                    "description": "제어 값\n- server_time: 2025-01-01 00:00:00 (서버 시간 전달)\n- on_time: 10:00~12:00 \n- co2_on_time: 10:00~12:00 \n- co2_period: 5 (분 단위로 설정)\n- factory_reset: value 값 없음\n- count_reset: value 값 없음"
-                  }
-                },
                 "required": [
-                  "deviceGroupId",
-                  "control"
-                ]
-              },
-              "example": {
-                "deviceGroupId": 0,
-                "deviceUUID": "",
-                "control": "co2_period",
-                "value": "5"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/webhook/device": {
-      "post": {
-        "tags": [
-          "webhook"
-        ],
-        "summary": "디바이스->서버 데이터 저장 요청",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "저장 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WebHookDeviceSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "저장 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WebHookDeviceFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "ipAddress": {
-                    "type": "string",
-                    "description": "디바이스의 IP 주소"
-                  },
-                  "latitude": {
-                    "type": "number",
-                    "description": "디바이스의 위도"
-                  },
-                  "longitude": {
-                    "type": "number",
-                    "description": "디바이스의 경도"
-                  },
-                  "count": {
-                    "type": "number",
-                    "description": "모기 포집 수"
-                  },
-                  "battery": {
-                    "type": "number",
-                    "description": "배터리 충전량 (68이면 68%를 의미)"
-                  },
-                  "charge": {
-                    "type": "number",
-                    "description": "충전 상태이면 1, 미충전 상태이면 0"
-                  },
-                  "fan": {
-                    "type": "number",
-                    "description": "팬 동작 상태이면 1, 팬 미동작 상태이면 0"
-                  },
-                  "dateTime": {
-                    "type": "string",
-                    "description": "장비의 현재 시간"
-                  }
-                },
-                "required": [
-                  "mosquito",
-                  "battery",
-                  "charge",
-                  "fan",
-                  "dateTime"
-                ]
-              },
-              "example": {
-                "ipAddress": "111.222.333.444",
-                "latitude": 37.498095,
-                "longitude": 126.854614,
-                "count": 10,
-                "battery": 68,
-                "charge": 1,
-                "fan": 1,
-                "dateTime": "2025-03-07 10:00:00"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/webhook/auth": {
-      "post": {
-        "tags": [
-          "webhook"
-        ],
-        "summary": "디바이스->서버 통신을 위한 인증",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "인증 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WebHookAuthSuccessResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "인증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WebHookAuthFailedResponse"
-                }
-              }
-            }
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
+                  "insect_name",
+                  "address_sido",
+                  "address_gungu",
+                  "address_dong",
+                  "latitude",
+                  "longitude",
+                  "collect_count",
+                  "status"
+                ],
                 "properties": {
                   "device_id": {
-                    "type": "string",
-                    "description": "디바이스 고유 UUID 값"
+                    "type": "integer",
+                    "nullable": true
                   },
-                  "device_secret": {
+                  "insect_name": {
+                    "type": "string"
+                  },
+                  "image_file": {
+                    "type": "string"
+                  },
+                  "address_sido": {
+                    "type": "string"
+                  },
+                  "address_gungu": {
+                    "type": "string"
+                  },
+                  "address_dong": {
+                    "type": "string"
+                  },
+                  "address_detail": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "type": "number"
+                  },
+                  "collect_count": {
+                    "type": "integer"
+                  },
+                  "status": {
                     "type": "string",
-                    "description": "시크릿 키"
+                    "description": "good | normal | warning | bad"
+                  },
+                  "memo": {
+                    "type": "string"
+                  },
+                  "created_date": {
+                    "type": "string",
+                    "format": "date-time"
                   }
-                },
-                "required": [
-                  "device_id",
-                  "device_secret"
-                ]
-              },
-              "example": {
-                "device_id": "test",
-                "device_secret": "1234"
+                }
               }
             }
           }
         }
+      }
+    },
+    "/collection/update": {
+      "put": {
+        "tags": [
+          "collection"
+        ],
+        "summary": "채집 이력 수정 (관리자)",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionHistory"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralFailedResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "device_id": {
+                    "type": "integer",
+                    "nullable": true
+                  },
+                  "insect_name": {
+                    "type": "string"
+                  },
+                  "image_file": {
+                    "type": "string"
+                  },
+                  "address_sido": {
+                    "type": "string"
+                  },
+                  "address_gungu": {
+                    "type": "string"
+                  },
+                  "address_dong": {
+                    "type": "string"
+                  },
+                  "address_detail": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "type": "number"
+                  },
+                  "collect_count": {
+                    "type": "integer"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "memo": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collection/delete": {
+      "delete": {
+        "tags": [
+          "collection"
+        ],
+        "summary": "채집 이력 삭제 (관리자)",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralFailedResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/statistics/summary": {
+      "get": {
+        "tags": [
+          "statistics"
+        ],
+        "summary": "상태별 집계 요약",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatisticsSummaryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralFailedResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/statistics/refresh": {
+      "post": {
+        "tags": [
+          "statistics"
+        ],
+        "summary": "집계 재계산 (관리자)",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatisticsSummaryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralFailedResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     }
   },
@@ -1524,29 +906,6 @@
                         "example": "date-time"
                       }
                     }
-                  },
-                  "_count": {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "example": "object"
-                      },
-                      "properties": {
-                        "type": "object",
-                        "properties": {
-                          "userDevices": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "integer"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
                   }
                 }
               }
@@ -1631,193 +990,6 @@
                   "format": {
                     "type": "string",
                     "example": "date-time"
-                  }
-                }
-              },
-              "userDevices": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "array"
-                  },
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "example": "object"
-                      },
-                      "properties": {
-                        "type": "object",
-                        "properties": {
-                          "device": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "object"
-                              },
-                              "properties": {
-                                "type": "object",
-                                "properties": {
-                                  "id": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "integer"
-                                      }
-                                    }
-                                  },
-                                  "device_name": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "string"
-                                      }
-                                    }
-                                  },
-                                  "device_uuid": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "string"
-                                      }
-                                    }
-                                  },
-                                  "ip_address": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "string"
-                                      }
-                                    }
-                                  },
-                                  "latitude": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "number"
-                                      }
-                                    }
-                                  },
-                                  "longitude": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "number"
-                                      }
-                                    }
-                                  },
-                                  "mosquito_count": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "integer"
-                                      }
-                                    }
-                                  },
-                                  "battery": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "integer"
-                                      }
-                                    }
-                                  },
-                                  "charge": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "integer"
-                                      }
-                                    }
-                                  },
-                                  "fan": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "integer"
-                                      }
-                                    }
-                                  },
-                                  "token_expired": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "string"
-                                      },
-                                      "format": {
-                                        "type": "string",
-                                        "example": "date-time"
-                                      },
-                                      "nullable": {
-                                        "type": "boolean",
-                                        "example": true
-                                      }
-                                    }
-                                  },
-                                  "device_date": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "string"
-                                      },
-                                      "format": {
-                                        "type": "string",
-                                        "example": "date-time"
-                                      }
-                                    }
-                                  },
-                                  "updated_date": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "string"
-                                      },
-                                      "format": {
-                                        "type": "string",
-                                        "example": "date-time"
-                                      },
-                                      "nullable": {
-                                        "type": "boolean",
-                                        "example": true
-                                      }
-                                    }
-                                  },
-                                  "created_date": {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "example": "string"
-                                      },
-                                      "format": {
-                                        "type": "string",
-                                        "example": "date-time"
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
                   }
                 }
               }
@@ -1986,7 +1158,7 @@
           }
         }
       },
-      "DeviceGroupListSuccessResponse": {
+      "AddressListSuccessResponse": {
         "type": "object",
         "properties": {
           "type": {
@@ -2003,65 +1175,39 @@
               "properties": {
                 "type": "object",
                 "properties": {
-                  "device_group_id": {
+                  "id": {
                     "type": "object",
                     "properties": {
                       "type": {
                         "type": "string",
                         "example": "integer"
-                      },
-                      "nullable": {
-                        "type": "boolean",
-                        "example": true
                       }
                     }
                   },
-                  "deviceGroup": {
+                  "address_sido": {
                     "type": "object",
                     "properties": {
                       "type": {
                         "type": "string",
-                        "example": "object"
-                      },
-                      "properties": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "integer"
-                              },
-                              "nullable": {
-                                "type": "boolean",
-                                "example": true
-                              }
-                            }
-                          },
-                          "group_name": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "string"
-                              }
-                            }
-                          },
-                          "created_date": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "string"
-                              },
-                              "format": {
-                                "type": "string",
-                                "example": "date-time"
-                              }
-                            }
-                          }
-                        }
+                        "example": "string"
+                      }
+                    }
+                  },
+                  "address_gungu": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      }
+                    }
+                  },
+                  "address_dong": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
                       }
                     }
                   }
@@ -2071,256 +1217,7 @@
           }
         }
       },
-      "DeviceListSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "example": "array"
-          },
-          "items": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "example": "object"
-              },
-              "properties": {
-                "type": "object",
-                "properties": {
-                  "device": {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "example": "object"
-                      },
-                      "properties": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "integer"
-                              },
-                              "nullable": {
-                                "type": "boolean",
-                                "example": true
-                              }
-                            }
-                          },
-                          "device_group_id": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "integer"
-                              }
-                            }
-                          },
-                          "device_name": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "string"
-                              }
-                            }
-                          },
-                          "device_uuid": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "string"
-                              }
-                            }
-                          },
-                          "ip_address": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "string"
-                              }
-                            }
-                          },
-                          "latitude": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "number"
-                              }
-                            }
-                          },
-                          "longitude": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "number"
-                              }
-                            }
-                          },
-                          "mosquito_count": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "integer"
-                              }
-                            }
-                          },
-                          "battery": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "integer"
-                              }
-                            }
-                          },
-                          "charge": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "integer"
-                              }
-                            }
-                          },
-                          "fan": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "integer"
-                              }
-                            }
-                          },
-                          "token_expired": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "string"
-                              },
-                              "format": {
-                                "type": "string",
-                                "example": "date-time"
-                              },
-                              "nullable": {
-                                "type": "boolean",
-                                "example": true
-                              }
-                            }
-                          },
-                          "device_date": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "string"
-                              },
-                              "format": {
-                                "type": "string",
-                                "example": "date-time"
-                              }
-                            }
-                          },
-                          "updated_date": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "string"
-                              },
-                              "format": {
-                                "type": "string",
-                                "example": "date-time"
-                              },
-                              "nullable": {
-                                "type": "boolean",
-                                "example": true
-                              }
-                            }
-                          },
-                          "created_date": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "string"
-                              },
-                              "format": {
-                                "type": "string",
-                                "example": "date-time"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  },
-                  "device_group": {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "example": "object"
-                      },
-                      "properties": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "integer"
-                              },
-                              "nullable": {
-                                "type": "boolean",
-                                "example": true
-                              }
-                            }
-                          },
-                          "group_name": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "string"
-                              }
-                            }
-                          },
-                          "created_date": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "example": "string"
-                              },
-                              "format": {
-                                "type": "string",
-                                "example": "date-time"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "DeviceGroupSuccessResponse": {
+      "CollectionHistory": {
         "type": "object",
         "properties": {
           "type": {
@@ -2336,290 +1233,10 @@
                   "type": {
                     "type": "string",
                     "example": "integer"
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "example": true
                   }
                 }
               },
-              "group_name": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
-                  }
-                }
-              },
-              "created_date": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
-                  },
-                  "format": {
-                    "type": "string",
-                    "example": "date-time"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "DeviceGetSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "example": "object"
-          },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "device": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "object"
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "integer"
-                          },
-                          "nullable": {
-                            "type": "boolean",
-                            "example": true
-                          }
-                        }
-                      },
-                      "device_group_id": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "integer"
-                          }
-                        }
-                      },
-                      "device_name": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "string"
-                          }
-                        }
-                      },
-                      "device_uuid": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "string"
-                          }
-                        }
-                      },
-                      "ip_address": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "string"
-                          }
-                        }
-                      },
-                      "latitude": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "number"
-                          }
-                        }
-                      },
-                      "longitude": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "number"
-                          }
-                        }
-                      },
-                      "mosquito_count": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "integer"
-                          }
-                        }
-                      },
-                      "battery": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "integer"
-                          }
-                        }
-                      },
-                      "charge": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "integer"
-                          }
-                        }
-                      },
-                      "fan": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "integer"
-                          }
-                        }
-                      },
-                      "token_expired": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "string"
-                          },
-                          "format": {
-                            "type": "string",
-                            "example": "date-time"
-                          },
-                          "nullable": {
-                            "type": "boolean",
-                            "example": true
-                          }
-                        }
-                      },
-                      "device_date": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "string"
-                          },
-                          "format": {
-                            "type": "string",
-                            "example": "date-time"
-                          }
-                        }
-                      },
-                      "updated_date": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "string"
-                          },
-                          "format": {
-                            "type": "string",
-                            "example": "date-time"
-                          },
-                          "nullable": {
-                            "type": "boolean",
-                            "example": true
-                          }
-                        }
-                      },
-                      "created_date": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "string"
-                          },
-                          "format": {
-                            "type": "string",
-                            "example": "date-time"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              "device_group": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "object"
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "integer"
-                          },
-                          "nullable": {
-                            "type": "boolean",
-                            "example": true
-                          }
-                        }
-                      },
-                      "group_name": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "string"
-                          }
-                        }
-                      },
-                      "created_date": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "example": "string"
-                          },
-                          "format": {
-                            "type": "string",
-                            "example": "date-time"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "DeviceSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "example": "object"
-          },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "id": {
+              "device_id": {
                 "type": "object",
                 "properties": {
                   "type": {
@@ -2632,16 +1249,7 @@
                   }
                 }
               },
-              "device_group_id": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "integer"
-                  }
-                }
-              },
-              "device_name": {
+              "insect_name": {
                 "type": "object",
                 "properties": {
                   "type": {
@@ -2650,7 +1258,7 @@
                   }
                 }
               },
-              "device_uuid": {
+              "image_file": {
                 "type": "object",
                 "properties": {
                   "type": {
@@ -2659,7 +1267,34 @@
                   }
                 }
               },
-              "ip_address": {
+              "address_sido": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "address_gungu": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "address_dong": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "address_detail": {
                 "type": "object",
                 "properties": {
                   "type": {
@@ -2686,7 +1321,7 @@
                   }
                 }
               },
-              "mosquito_count": {
+              "collect_count": {
                 "type": "object",
                 "properties": {
                   "type": {
@@ -2695,77 +1330,25 @@
                   }
                 }
               },
-              "battery": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "integer"
-                  }
-                }
-              },
-              "charge": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "integer"
-                  }
-                }
-              },
-              "fan": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "integer"
-                  }
-                }
-              },
-              "token_expired": {
+              "status": {
                 "type": "object",
                 "properties": {
                   "type": {
                     "type": "string",
                     "example": "string"
                   },
-                  "format": {
+                  "description": {
                     "type": "string",
-                    "example": "date-time"
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "example": true
+                    "example": "good | normal | warning | bad"
                   }
                 }
               },
-              "device_date": {
+              "memo": {
                 "type": "object",
                 "properties": {
                   "type": {
                     "type": "string",
                     "example": "string"
-                  },
-                  "format": {
-                    "type": "string",
-                    "example": "date-time"
-                  }
-                }
-              },
-              "updated_date": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
-                  },
-                  "format": {
-                    "type": "string",
-                    "example": "date-time"
-                  },
-                  "nullable": {
-                    "type": "boolean",
-                    "example": true
                   }
                 }
               },
@@ -2786,125 +1369,7 @@
           }
         }
       },
-      "ListByCountSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "example": "array"
-          },
-          "items": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "example": "object"
-              },
-              "properties": {
-                "type": "object",
-                "properties": {
-                  "device_group_id": {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "example": "integer"
-                      }
-                    }
-                  },
-                  "device_id": {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "example": "integer"
-                      }
-                    }
-                  },
-                  "count": {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "example": "integer"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "SummarySuccessResponse": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "example": "object"
-          },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "device_group_id": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "integer"
-                  }
-                }
-              },
-              "device_count": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "integer"
-                  }
-                }
-              },
-              "online_count": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "integer"
-                  }
-                }
-              },
-              "offline_count": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "integer"
-                  }
-                }
-              },
-              "warning_count": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "integer"
-                  }
-                }
-              },
-              "mosquito_count": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "integer"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "StatisticsSuccessResponse": {
+      "CollectionHistoryListResponse": {
         "type": "object",
         "properties": {
           "type": {
@@ -2936,10 +1401,14 @@
                       "type": {
                         "type": "string",
                         "example": "integer"
+                      },
+                      "nullable": {
+                        "type": "boolean",
+                        "example": true
                       }
                     }
                   },
-                  "device_uuid": {
+                  "insect_name": {
                     "type": "object",
                     "properties": {
                       "type": {
@@ -2948,12 +1417,93 @@
                       }
                     }
                   },
-                  "mosquito_count": {
+                  "image_file": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      }
+                    }
+                  },
+                  "address_sido": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      }
+                    }
+                  },
+                  "address_gungu": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      }
+                    }
+                  },
+                  "address_dong": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      }
+                    }
+                  },
+                  "address_detail": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      }
+                    }
+                  },
+                  "latitude": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "number"
+                      }
+                    }
+                  },
+                  "longitude": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "number"
+                      }
+                    }
+                  },
+                  "collect_count": {
                     "type": "object",
                     "properties": {
                       "type": {
                         "type": "string",
                         "example": "integer"
+                      }
+                    }
+                  },
+                  "status": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
+                      }
+                    }
+                  },
+                  "memo": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "example": "string"
                       }
                     }
                   },
@@ -2976,30 +1526,7 @@
           }
         }
       },
-      "ControlSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "example": "string"
-          },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "status": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "WebHookAuthSuccessResponse": {
+      "StatisticsSummaryResponse": {
         "type": "object",
         "properties": {
           "type": {
@@ -3009,62 +1536,48 @@
           "properties": {
             "type": "object",
             "properties": {
-              "status": {
+              "id": {
                 "type": "object",
                 "properties": {
                   "type": {
                     "type": "string",
-                    "example": "string"
+                    "example": "integer"
                   }
                 }
               },
-              "token": {
+              "good_count": {
                 "type": "object",
                 "properties": {
                   "type": {
                     "type": "string",
-                    "example": "string"
+                    "example": "integer"
                   }
                 }
               },
-              "expires_in": {
+              "normal_count": {
                 "type": "object",
                 "properties": {
                   "type": {
                     "type": "string",
-                    "example": "number"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "WebHookAuthFailedResponse": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "example": "object"
-          },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "status": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
+                    "example": "integer"
                   }
                 }
               },
-              "message": {
+              "warning_count": {
                 "type": "object",
                 "properties": {
                   "type": {
                     "type": "string",
-                    "example": "string"
+                    "example": "integer"
+                  }
+                }
+              },
+              "bad_count": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
                   }
                 }
               }
@@ -3072,7 +1585,7 @@
           }
         }
       },
-      "WebHookDeviceSuccessResponse": {
+      "GeneralSuccessResponse": {
         "type": "object",
         "properties": {
           "type": {
@@ -3082,30 +1595,7 @@
           "properties": {
             "type": "object",
             "properties": {
-              "status": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "example": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "WebHookDeviceFailedResponse": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "example": "object"
-          },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "status": {
+              "type": {
                 "type": "object",
                 "properties": {
                   "type": {
