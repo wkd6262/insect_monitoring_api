@@ -10,6 +10,8 @@ export interface CollectionHistory {
   latitude: number;
   longitude: number;
   collect_count: number;
+  collect_count_min: number;
+  collect_count_max: number | null;
   status: string;
   memo: string;
   created_date?: Date;

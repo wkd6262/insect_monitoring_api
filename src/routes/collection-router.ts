@@ -112,7 +112,7 @@ router.post('/register', async (request: Request, response: Response) => {
          'application/json': {
            schema: {
              type: 'object',
-             required: ['insect_name', 'address_sido', 'address_gungu', 'address_dong', 'latitude', 'longitude', 'collect_count', 'status'],
+             required: ['insect_name', 'address_sido', 'address_gungu', 'address_dong', 'latitude', 'longitude', 'collect_count', 'collect_count_min', 'status'],
              properties: {
                device_id: { type: 'integer', nullable: true },
                insect_name: { type: 'string' },
@@ -124,6 +124,8 @@ router.post('/register', async (request: Request, response: Response) => {
                latitude: { type: 'number' },
                longitude: { type: 'number' },
                collect_count: { type: 'integer' },
+               collect_count_min: { type: 'integer' },
+               collect_count_max: { type: 'integer', nullable: true },
                status: { type: 'string', description: 'good | normal | warning | bad' },
                memo: { type: 'string' },
                created_date: { type: 'string', format: 'date-time' }
@@ -153,6 +155,8 @@ router.post('/register', async (request: Request, response: Response) => {
       latitude: request.body.latitude,
       longitude: request.body.longitude,
       collect_count: request.body.collect_count,
+      collect_count_min: request.body.collect_count_min,
+      collect_count_max: request.body.collect_count_max ?? null,
       status: request.body.status,
       memo: request.body.memo ?? '',
       created_date: request.body.created_date
@@ -192,6 +196,8 @@ router.put('/update', async (request: Request, response: Response) => {
                latitude: { type: 'number' },
                longitude: { type: 'number' },
                collect_count: { type: 'integer' },
+               collect_count_min: { type: 'integer' },
+               collect_count_max: { type: 'integer', nullable: true },
                status: { type: 'string' },
                memo: { type: 'string' }
              }
@@ -233,6 +239,8 @@ router.put('/update', async (request: Request, response: Response) => {
       latitude: request.body.latitude ?? existing.latitude,
       longitude: request.body.longitude ?? existing.longitude,
       collect_count: request.body.collect_count ?? existing.collect_count,
+      collect_count_min: request.body.collect_count_min ?? existing.collect_count_min,
+      collect_count_max: request.body.collect_count_max ?? existing.collect_count_max,
       status: request.body.status ?? existing.status,
       memo: request.body.memo ?? existing.memo,
     };
