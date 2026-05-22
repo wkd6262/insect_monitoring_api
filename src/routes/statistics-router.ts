@@ -6,12 +6,10 @@ import { Statistics } from '../models/statistics';
 
 const router = Router();
 
-router.use('/summary', verifyToken);
 router.get('/summary', async (request: Request, response: Response) => {
   // #swagger.tags = ['statistics']
   // #swagger.path = '/statistics/summary'
-  // #swagger.security = [{bearerAuth: []}]
-  // #swagger.summary = '상태별 집계 요약'
+  // #swagger.summary = '상태별 집계 요약 (공개)'
   /* #swagger.responses[200] = {
        description: '성공',
        content: { 'application/json': { schema: { $ref: '#/components/schemas/StatisticsSummaryResponse' } } }

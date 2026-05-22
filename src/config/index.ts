@@ -17,6 +17,8 @@ export default {
 
   serverNumber: process.env.SERVER_NUM,
   webhookSecretKey: process.env.WEBHOOK_SECRET_KEY,
+  naverMapNcpKeyId: process.env.NAVER_MAP_NCP_KEY_ID,
+  naverMapApiKey: process.env.NAVER_MAP_API_KEY,
   //for winston logger
   logs: {
     level: process.env.LOG_LEVEL,

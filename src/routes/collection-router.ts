@@ -38,12 +38,10 @@ router.get('/list', async (request: Request, response: Response) => {
   }
 });
 
-router.use('/map', verifyToken);
 router.get('/map', async (request: Request, response: Response) => {
   // #swagger.tags = ['collection']
   // #swagger.path = '/collection/map'
-  // #swagger.security = [{bearerAuth: []}]
-  // #swagger.summary = '지도용 채집 이력'
+  // #swagger.summary = '지도용 채집 이력 (공개)'
   /* #swagger.parameters['address_sido'] = { in: 'query', type: 'string' } */
   /* #swagger.parameters['address_gungu'] = { in: 'query', type: 'string' } */
   /* #swagger.parameters['address_dong'] = { in: 'query', type: 'string' } */
@@ -100,12 +98,10 @@ router.get('/detail', async (request: Request, response: Response) => {
   }
 });
 
-router.use('/register', verifyToken);
 router.post('/register', async (request: Request, response: Response) => {
   // #swagger.tags = ['collection']
   // #swagger.path = '/collection/register'
-  // #swagger.security = [{bearerAuth: []}]
-  // #swagger.summary = '채집 이력 등록'
+  // #swagger.summary = '채집 이력 등록 (공개)'
   /* #swagger.requestBody = {
        required: true,
        content: {

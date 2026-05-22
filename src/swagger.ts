@@ -80,6 +80,16 @@ const doc = {
         },
       },
     },
+    AddressReverseSuccessResponse: {
+      type: 'object',
+      properties: {
+        address_sido: { type: 'string' },
+        address_gungu: { type: 'string' },
+        address_dong: { type: 'string' },
+        displayGu: { type: 'string' },
+        isSeoul: { type: 'boolean' },
+      },
+    },
     CollectionHistory: {
       type: 'object',
       properties: {
