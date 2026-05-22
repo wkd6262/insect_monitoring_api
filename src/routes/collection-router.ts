@@ -302,6 +302,22 @@ router.delete('/delete', async (request: Request, response: Response) => {
 
     const id = request.body.id as number;
     await collectionService.delete(id);
+
+    const counts = await collectionService.countByStatus();
+    const statisticsService = new StatisticsService();
+    const existingStats = await statisticsService.findFirst();
+    const statsPayload: Statistics = {
+      good_count: counts.good_count,
+      normal_count: counts.normal_count,
+      warning_count: counts.warning_count,
+      bad_count: counts.bad_count,
+    };
+    if (existingStats?.id) {
+      await statisticsService.update(existingStats.id, statsPayload);
+    } else {
+      await statisticsService.create(statsPayload);
+    }
+
     response.status(200).json({ type: 'success', message: 'success' });
   } catch (err) {
     response.status(400).json({ type: 'error', message: 'unknown server error' });
