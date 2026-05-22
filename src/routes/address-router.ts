@@ -7,7 +7,7 @@ import config from '../config';
 const router = Router();
 
 const reverseGeocodeUrl =
-  'https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc';
+  'https://maps.apigw.ntruss.com/map-reversegeocode/v2/gc';
 
 router.get('/reverse', async (request: Request, response: Response) => {
   // #swagger.tags = ['address']
@@ -38,14 +38,16 @@ router.get('/reverse', async (request: Request, response: Response) => {
       return;
     }
 
-    const keyId = config.naverMapNcpKeyId;
-    const apiKey = config.naverMapApiKey;
-    if (!keyId || !apiKey) {
-      response.status(400).json({ type: 'error', message: 'unknown server error' });
+    const naverClientId = config.naverClientId;
+    const naverClientSecretKey = config.naverClientSecretKey;
+    if (!naverClientId || !naverClientSecretKey) {
+      response
+        .status(400)
+        .json({ type: 'error', message: 'unknown server error' });
       return;
     }
 
-    const ncpResponse = await axios.get(reverseGeocodeUrl, {
+    const naverResponse = await axios.get(reverseGeocodeUrl, {
       params: {
         request: 'coordsToaddr',
         coords: `${longitude},${latitude}`,
@@ -54,14 +56,16 @@ router.get('/reverse', async (request: Request, response: Response) => {
         output: 'json',
       },
       headers: {
-        'x-ncp-apigw-api-key-id': keyId,
-        'x-ncp-apigw-api-key': apiKey,
+        'x-ncp-apigw-api-key-id': naverClientId,
+        'x-ncp-apigw-api-key': naverClientSecretKey,
       },
     });
 
-    const statusCode = ncpResponse.data?.status?.code;
+    const statusCode = naverResponse.data?.status?.code;
     if (statusCode === 3) {
-      response.status(400).json({ type: 'error', message: 'no address results' });
+      response
+        .status(400)
+        .json({ type: 'error', message: 'no address results' });
       return;
     }
     if (statusCode !== 0) {
@@ -69,17 +73,25 @@ router.get('/reverse', async (request: Request, response: Response) => {
       return;
     }
 
-    const results = ncpResponse.data?.results;
+    const results = naverResponse.data?.results;
     if (!Array.isArray(results) || results.length === 0) {
-      response.status(400).json({ type: 'error', message: 'no address results' });
+      response
+        .status(400)
+        .json({ type: 'error', message: 'no address results' });
       return;
     }
 
-    const admResult = results.find((item: { name?: string }) => item.name === 'admcode');
-    const legalResult = results.find((item: { name?: string }) => item.name === 'legalcode');
+    const admResult = results.find(
+      (item: { name?: string }) => item.name === 'admcode',
+    );
+    const legalResult = results.find(
+      (item: { name?: string }) => item.name === 'legalcode',
+    );
     const region = admResult?.region ?? legalResult?.region;
     if (!region?.area1?.name || !region?.area2?.name) {
-      response.status(400).json({ type: 'error', message: 'no address results' });
+      response
+        .status(400)
+        .json({ type: 'error', message: 'no address results' });
       return;
     }
 
@@ -88,6 +100,7 @@ router.get('/reverse', async (request: Request, response: Response) => {
     const addressDong = (region.area3?.name as string) ?? '';
     const isSeoul = addressSido.includes('서울');
 
+    response.set('Cache-Control', 'no-store');
     response.status(200).json({
       address_sido: addressSido,
       address_gungu: addressGungu,
@@ -96,7 +109,9 @@ router.get('/reverse', async (request: Request, response: Response) => {
       isSeoul,
     });
   } catch (err) {
-    response.status(400).json({ type: 'error', message: 'unknown server error' });
+    response
+      .status(400)
+      .json({ type: 'error', message: 'unknown server error' });
   }
 });
 

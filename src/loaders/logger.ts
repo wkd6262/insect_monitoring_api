@@ -55,7 +55,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const LoggerInstance = createLogger({
-  level: 'custom',
+  level: configData.logs.level ?? 'debug',
   levels: config.npm.levels,
   format: format.combine(
     format.timestamp({

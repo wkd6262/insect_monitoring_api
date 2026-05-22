@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { verifyToken } from '../authorization';
 import { CollectionService } from '../services/collection-service';
+import { StatisticsService } from '../services/statistics-service';
 import { CollectionHistory } from '../models/collectionHistory';
+import { Statistics } from '../models/statistics';
 
 const router = Router();
 
@@ -161,6 +163,22 @@ router.post('/register', async (request: Request, response: Response) => {
     };
 
     const created = await collectionService.register(data);
+
+    const counts = await collectionService.countByStatus();
+    const statisticsService = new StatisticsService();
+    const existingStats = await statisticsService.findFirst();
+    const statsPayload: Statistics = {
+      good_count: counts.good_count,
+      normal_count: counts.normal_count,
+      warning_count: counts.warning_count,
+      bad_count: counts.bad_count,
+    };
+    if (existingStats?.id) {
+      await statisticsService.update(existingStats.id, statsPayload);
+    } else {
+      await statisticsService.create(statsPayload);
+    }
+
     response.status(200).json(created);
   } catch (err) {
     response.status(400).json({ type: 'error', message: 'unknown server error' });
