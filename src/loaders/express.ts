@@ -5,6 +5,7 @@ import accountRouter from '../routes/account-router';
 import addressRouter from '../routes/address-router';
 import collectionRouter from '../routes/collection-router';
 import statisticsRouter from '../routes/statistics-router';
+import uploadRouter from '../routes/upload-router';
 import config from '../config';
 import Logger from '../loaders/logger';
 import swaggerUi from 'swagger-ui-express';
@@ -76,6 +77,7 @@ export default ({ app }: { app: express.Application }) => {
   app.use('/address', addressRouter);
   app.use('/collection', collectionRouter);
   app.use('/statistics', statisticsRouter);
+  app.use('/upload', uploadRouter);
 
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
