@@ -56,6 +56,26 @@ const s3upload_images = multer({
 //   },
 // );
 
+//채집 사진 — 업로드 페이지 (공개)
+router.post(
+  '/image/collection',
+  s3upload_images.single('file'),
+  async (request: Request, response: Response) => {
+    try {
+      if (!request.file) {
+        response.status(400).send('upload failed');
+        return;
+      }
+      const key = (request.file as any).key;
+      await storageService.replaceObject(config.awsBucketName!, key);
+      response.send(key);
+    } catch (err) {
+      console.log(err);
+      response.status(400).send('upload failed');
+    }
+  },
+);
+
 //파일 업로드.
 router.use('/image/:folder', verifyToken);
 router.post(
