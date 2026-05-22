@@ -36,6 +36,8 @@ model CollectionHistory {
   latitude Float
   longitude Float
   collect_count Int
+  collect_count_min Int //마릿수 드롭다운 구간 하한
+  collect_count_max Int? //마릿수 드롭다운 구간 상한 (100마리 이상은 null)
   status String
   memo String
   created_date DateTime @default(now())
