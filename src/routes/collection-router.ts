@@ -196,7 +196,10 @@ router.post('/register', async (request: Request, response: Response) => {
       status: request.body.status,
       memo: request.body.memo ?? '',
       created_date: request.body.created_date
-        ? new Date(request.body.created_date)
+        ? dayjs
+            .tz(String(request.body.created_date), 'Asia/Seoul')
+            .utc()
+            .toDate()
         : new Date(),
     };
 
