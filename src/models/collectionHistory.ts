@@ -14,5 +14,5 @@ export interface CollectionHistory {
   collect_count_max: number | null;
   status: string;
   memo: string;
-  created_date?: Date;
+  created_date?: Date | string;
 }

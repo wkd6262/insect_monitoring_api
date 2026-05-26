@@ -4,8 +4,14 @@ import { CollectionService } from '../services/collection-service';
 import { StatisticsService } from '../services/statistics-service';
 import { CollectionHistory } from '../models/collectionHistory';
 import { Statistics } from '../models/statistics';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
 const router = Router();
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 router.use('/list', verifyToken);
 router.get('/list', async (request: Request, response: Response) => {
@@ -34,9 +40,20 @@ router.get('/list', async (request: Request, response: Response) => {
     const page = parseInt((request.query.page as string) || '1', 10);
     const count = parseInt((request.query.count as string) || '20', 10);
     const list = await collectionService.find(page, count);
-    response.status(200).json(list);
+    const body = list.map((row) => ({
+      ...row,
+      created_date: row.created_date
+        ? dayjs
+            .utc(row.created_date)
+            .tz('Asia/Seoul')
+            .format('YYYY-MM-DD HH:mm:ss')
+        : row.created_date,
+    }));
+    response.status(200).json(body);
   } catch (err) {
-    response.status(400).json({ type: 'error', message: 'unknown server error' });
+    response
+      .status(400)
+      .json({ type: 'error', message: 'unknown server error' });
   }
 });
 
@@ -65,9 +82,20 @@ router.get('/map', async (request: Request, response: Response) => {
       addressGungu,
       addressDong,
     );
-    response.status(200).json(list);
+    const body = list.map((row) => ({
+      ...row,
+      created_date: row.created_date
+        ? dayjs
+            .utc(row.created_date)
+            .tz('Asia/Seoul')
+            .format('YYYY-MM-DD HH:mm:ss')
+        : row.created_date,
+    }));
+    response.status(200).json(body);
   } catch (err) {
-    response.status(400).json({ type: 'error', message: 'unknown server error' });
+    response
+      .status(400)
+      .json({ type: 'error', message: 'unknown server error' });
   }
 });
 
@@ -91,12 +119,22 @@ router.get('/detail', async (request: Request, response: Response) => {
     const id = parseInt(request.query.id as string, 10);
     const item = await collectionService.findById(id);
     if (item === null) {
-      response.status(400).json({ type: 'error', message: 'not exists history' });
+      response
+        .status(400)
+        .json({ type: 'error', message: 'not exists history' });
       return;
     }
-    response.status(200).json(item);
+    const body = {
+      ...item,
+      created_date: item.created_date
+        ? dayjs.utc(item.created_date).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss')
+        : item.created_date,
+    };
+    response.status(200).json(body);
   } catch (err) {
-    response.status(400).json({ type: 'error', message: 'unknown server error' });
+    response
+      .status(400)
+      .json({ type: 'error', message: 'unknown server error' });
   }
 });
 
@@ -181,7 +219,9 @@ router.post('/register', async (request: Request, response: Response) => {
 
     response.status(200).json(created);
   } catch (err) {
-    response.status(400).json({ type: 'error', message: 'unknown server error' });
+    response
+      .status(400)
+      .json({ type: 'error', message: 'unknown server error' });
   }
 });
 
@@ -238,7 +278,9 @@ router.put('/update', async (request: Request, response: Response) => {
     const id = request.body.id as number;
     const existing = await collectionService.findById(id);
     if (existing === null) {
-      response.status(400).json({ type: 'error', message: 'not exists history' });
+      response
+        .status(400)
+        .json({ type: 'error', message: 'not exists history' });
       return;
     }
 
@@ -253,8 +295,10 @@ router.put('/update', async (request: Request, response: Response) => {
       latitude: request.body.latitude ?? existing.latitude,
       longitude: request.body.longitude ?? existing.longitude,
       collect_count: request.body.collect_count ?? existing.collect_count,
-      collect_count_min: request.body.collect_count_min ?? existing.collect_count_min,
-      collect_count_max: request.body.collect_count_max ?? existing.collect_count_max,
+      collect_count_min:
+        request.body.collect_count_min ?? existing.collect_count_min,
+      collect_count_max:
+        request.body.collect_count_max ?? existing.collect_count_max,
       status: request.body.status ?? existing.status,
       memo: request.body.memo ?? existing.memo,
     };
@@ -262,7 +306,9 @@ router.put('/update', async (request: Request, response: Response) => {
     const updated = await collectionService.update(id, data);
     response.status(200).json(updated);
   } catch (err) {
-    response.status(400).json({ type: 'error', message: 'unknown server error' });
+    response
+      .status(400)
+      .json({ type: 'error', message: 'unknown server error' });
   }
 });
 
@@ -320,7 +366,9 @@ router.delete('/delete', async (request: Request, response: Response) => {
 
     response.status(200).json({ type: 'success', message: 'success' });
   } catch (err) {
-    response.status(400).json({ type: 'error', message: 'unknown server error' });
+    response
+      .status(400)
+      .json({ type: 'error', message: 'unknown server error' });
   }
 });
 
